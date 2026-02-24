@@ -87,6 +87,19 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);line-height:
 .cover-modal .modal-cat{font-size:.72rem;color:var(--accent);letter-spacing:.12em;text-transform:uppercase;margin-bottom:12px}
 .cover-modal .modal-desc{font-size:.88rem;color:var(--muted);line-height:1.55}
 
+/* Charts Section */
+.charts-section{max-width:1100px;margin:0 auto;padding:60px 24px 40px}
+.charts-header{font-family:var(--serif);font-size:1.8rem;color:var(--accent);border-bottom:1px solid var(--border);padding-bottom:8px;margin-bottom:12px;letter-spacing:.06em}
+.charts-sub{color:var(--muted);font-size:.9rem;margin-bottom:28px}
+.chart-tabs{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:24px}
+.chart-tabs button{background:var(--surface);color:var(--muted);border:1px solid var(--border);border-radius:20px;padding:6px 18px;font-size:.8rem;cursor:pointer;transition:all .25s;letter-spacing:.06em}
+.chart-tabs button:hover,.chart-tabs button.active{background:var(--accent);color:#0a0a0f;border-color:var(--accent)}
+.chart-wrapper{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:24px;margin-bottom:20px;position:relative;overflow:hidden}
+.chart-insights{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:16px}
+.insight-card{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:18px}
+.insight-card .insight-num{font-family:var(--serif);font-size:1.6rem;color:var(--accent);display:block;margin-bottom:4px}
+.insight-card .insight-label{font-size:.75rem;color:var(--muted);letter-spacing:.1em;text-transform:uppercase}
+
 /* Print feel ornament */
 .ornament{text-align:center;color:var(--border);font-size:1.4rem;letter-spacing:1em;margin:40px 0}
 footer{text-align:center;padding:48px 24px;color:var(--muted);font-size:.75rem;border-top:1px solid var(--border);letter-spacing:.08em}
@@ -103,6 +116,7 @@ footer{text-align:center;padding:48px 24px;color:var(--muted);font-size:.75rem;b
     <div class="stat"><span class="num" id="acqCount">0</span><span class="label">Acquisitions</span></div>
   </div>
   <a href="#gallery" style="display:inline-block;margin-top:28px;color:var(--accent);font-size:.82rem;letter-spacing:.12em;text-transform:uppercase;text-decoration:none;border:1px solid var(--accent2);padding:8px 24px;border-radius:20px;transition:all .25s" onmouseover="this.style.background='var(--accent)';this.style.color='#0a0a0f'" onmouseout="this.style.background='transparent';this.style.color='var(--accent)'">Browse Cover Gallery ↓</a>
+  <a href="#charts" style="display:inline-block;margin-top:12px;margin-left:12px;color:var(--accent);font-size:.82rem;letter-spacing:.12em;text-transform:uppercase;text-decoration:none;border:1px solid var(--accent2);padding:8px 24px;border-radius:20px;transition:all .25s" onmouseover="this.style.background='var(--accent)';this.style.color='#0a0a0f'" onmouseout="this.style.background='transparent';this.style.color='var(--accent)'">Revenue & Circulation ↓</a>
 </div>
 
 <div style="padding-top:16px"></div>
@@ -128,6 +142,21 @@ footer{text-align:center;padding:48px 24px;color:var(--muted);font-size:.75rem;b
     <div class="modal-cat" id="modalCat"></div>
     <p class="modal-desc" id="modalDesc"></p>
   </div>
+</div>
+
+<!-- Data Visualization Section -->
+<div class="charts-section" id="charts">
+  <h2 class="charts-header">Revenue & Circulation</h2>
+  <p class="charts-sub">Key metrics across the publishing empire — circulation peaks, revenue milestones, and portfolio composition</p>
+  <div class="chart-tabs" id="chartTabs">
+    <button class="active" data-chart="circulation">Circulation Trends</button>
+    <button data-chart="revenue">Revenue Milestones</button>
+    <button data-chart="portfolio">Portfolio Mix</button>
+  </div>
+  <div class="chart-wrapper">
+    <canvas id="chartCanvas" width="1060" height="420"></canvas>
+  </div>
+  <div class="chart-insights" id="chartInsights"></div>
 </div>
 
 <div class="ornament">§ § §</div>
@@ -354,6 +383,106 @@ function openCoverModal(c){
   document.getElementById("modalDesc").textContent=c.desc;
   modal.classList.add("open");
 }
+</script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+<script>
+// === Revenue & Circulation Data Visualization ===
+const chartCtx=document.getElementById("chartCanvas").getContext("2d");
+let activeChart=null;
+
+const CIRC_DATA={
+  labels:["1920","1930","1940","1950","1960","1970","1980","1990","2000","2005","2010","2015","2020","2024"],
+  datasets:[
+    {label:"Good Housekeeping",data:[1.2,1.8,2.5,3.4,5.1,5.6,5.2,5.0,4.5,4.6,4.3,4.1,3.2,2.8],borderColor:"#e74c3c",backgroundColor:"rgba(231,76,60,.1)",fill:true,tension:.35},
+    {label:"Cosmopolitan",data:[0.8,1.5,1.8,1.2,1.0,2.5,3.0,2.8,2.9,3.0,3.0,3.0,2.2,1.6],borderColor:"#d4456a",backgroundColor:"rgba(212,69,106,.1)",fill:true,tension:.35},
+    {label:"Esquire",data:[null,null,null,.7,.9,1.2,1.0,.8,.7,.7,.7,.7,.6,.5],borderColor:"#c9a84c",backgroundColor:"rgba(201,168,76,.1)",fill:true,tension:.35},
+    {label:"Popular Mechanics",data:[.5,.8,1.1,1.4,1.6,1.6,1.6,1.6,1.2,1.2,1.1,1.0,.9,.7],borderColor:"#3c6382",backgroundColor:"rgba(60,99,130,.1)",fill:true,tension:.35},
+    {label:"O Magazine",data:[null,null,null,null,null,null,null,null,2.5,2.4,2.4,2.3,2.1,1.5],borderColor:"#f39c12",backgroundColor:"rgba(243,156,18,.1)",fill:true,tension:.35},
+    {label:"Food Network Mag",data:[null,null,null,null,null,null,null,null,null,null,1.3,1.9,2.0,1.7],borderColor:"#27ae60",backgroundColor:"rgba(39,174,96,.1)",fill:true,tension:.35}
+  ]
+};
+
+const REV_DATA={
+  labels:["1990","1995","2000","2005","2010","2012","2015","2018","2020","2022","2024"],
+  datasets:[
+    {label:"Magazine Revenue",data:[2.1,2.8,3.5,4.0,3.6,3.2,2.9,2.6,2.1,2.3,2.5],borderColor:"#c9a84c",backgroundColor:"rgba(201,168,76,.15)",fill:true,tension:.3,pointRadius:5,pointBackgroundColor:"#c9a84c"},
+    {label:"Digital Revenue",data:[0,0,0.1,0.3,0.6,0.9,1.4,2.0,2.8,3.6,4.2],borderColor:"#5a9acb",backgroundColor:"rgba(90,154,203,.15)",fill:true,tension:.3,pointRadius:5,pointBackgroundColor:"#5a9acb"},
+    {label:"Diversified (Ratings/TV/Other)",data:[0.5,0.8,1.2,2.5,3.8,4.2,4.8,5.4,5.1,5.8,6.3],borderColor:"#5cb87a",backgroundColor:"rgba(92,184,122,.15)",fill:true,tension:.3,pointRadius:5,pointBackgroundColor:"#5cb87a"}
+  ]
+};
+
+const PORT_DATA={
+  labels:["Women's & Fashion","Men's & Fitness","Home & Lifestyle","Food & Dining","Technology & Auto","Digital & Media","Financial Services","Other"],
+  datasets:[{
+    data:[28,12,15,11,8,10,12,4],
+    backgroundColor:["#d4456a","#3c6382","#c9a84c","#27ae60","#e58e26","#8e44ad","#2980b9","#636e72"],
+    borderColor:"#1a1a26",borderWidth:2,
+    hoverOffset:12
+  }]
+};
+
+const CHART_CONFIGS={
+  circulation:{
+    type:"line",data:CIRC_DATA,
+    options:{
+      responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{position:"bottom",labels:{color:"#8a8a9a",font:{size:11},padding:16,usePointStyle:true}},tooltip:{backgroundColor:"#1a1a26",titleColor:"#c9a84c",bodyColor:"#e8e6e3",borderColor:"#2a2a3a",borderWidth:1,callbacks:{label:ctx=>` ${ctx.dataset.label}: ${ctx.parsed.y}M copies`}}},
+      scales:{x:{ticks:{color:"#8a8a9a",font:{size:10}},grid:{color:"rgba(42,42,58,.4)"}},y:{ticks:{color:"#8a8a9a",font:{size:10},callback:v=>v+"M"},grid:{color:"rgba(42,42,58,.4)"},title:{display:true,text:"Paid Circulation (millions)",color:"#8a8a9a",font:{size:11}}}}
+    },
+    insights:[
+      {num:"5.6M",label:"Good Housekeeping peak (1970)"},
+      {num:"3.0M",label:"Cosmopolitan peak circulation"},
+      {num:"2.5M",label:"O Magazine — record launch"},
+      {num:"-38%",label:"Industry print decline since 2000"}
+    ]
+  },
+  revenue:{
+    type:"line",data:REV_DATA,
+    options:{
+      responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{position:"bottom",labels:{color:"#8a8a9a",font:{size:11},padding:16,usePointStyle:true}},tooltip:{backgroundColor:"#1a1a26",titleColor:"#c9a84c",bodyColor:"#e8e6e3",borderColor:"#2a2a3a",borderWidth:1,callbacks:{label:ctx=>` ${ctx.dataset.label}: $${ctx.parsed.y}B`}}},
+      scales:{x:{ticks:{color:"#8a8a9a",font:{size:10}},grid:{color:"rgba(42,42,58,.4)"}},y:{ticks:{color:"#8a8a9a",font:{size:10},callback:v=>"$"+v+"B"},grid:{color:"rgba(42,42,58,.4)"},title:{display:true,text:"Revenue ($ billions)",color:"#8a8a9a",font:{size:11}}}}
+    },
+    insights:[
+      {num:"$13B+",label:"Estimated total annual revenue (2024)"},
+      {num:"4.2x",label:"Digital revenue growth since 2010"},
+      {num:"48%",label:"Diversified revenue share"},
+      {num:"2006",label:"Fitch Ratings acquisition — transformation year"}
+    ]
+  },
+  portfolio:{
+    type:"doughnut",data:PORT_DATA,
+    options:{
+      responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{position:"right",labels:{color:"#8a8a9a",font:{size:11},padding:12,usePointStyle:true}},tooltip:{backgroundColor:"#1a1a26",titleColor:"#c9a84c",bodyColor:"#e8e6e3",borderColor:"#2a2a3a",borderWidth:1,callbacks:{label:ctx=>` ${ctx.label}: ${ctx.parsed}% of titles`}}},
+      cutout:"55%"
+    },
+    insights:[
+      {num:"40+",label:"Active magazine titles today"},
+      {num:"28%",label:"Women's & fashion — largest segment"},
+      {num:"137",label:"Years of publishing history"},
+      {num:"12%",label:"Financial services diversification"}
+    ]
+  }
+};
+
+function renderChart(key){
+  if(activeChart){activeChart.destroy();activeChart=null}
+  const cfg=CHART_CONFIGS[key];
+  document.getElementById("chartCanvas").parentElement.style.height=key==="portfolio"?"460px":"400px";
+  activeChart=new Chart(chartCtx,{type:cfg.type,data:cfg.data,options:cfg.options});
+  const insEl=document.getElementById("chartInsights");
+  insEl.innerHTML=cfg.insights.map(i=>`<div class="insight-card"><span class="insight-num">${i.num}</span><span class="insight-label">${i.label}</span></div>`).join("");
+}
+
+document.getElementById("chartTabs").querySelectorAll("button").forEach(b=>{
+  b.addEventListener("click",()=>{
+    document.getElementById("chartTabs").querySelectorAll("button").forEach(x=>x.classList.remove("active"));
+    b.classList.add("active");
+    renderChart(b.dataset.chart);
+  });
+});
+renderChart("circulation");
 </script>
 </body>
 </html>
