@@ -58,6 +58,35 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);line-height:
 /* Responsive */
 @media(max-width:600px){.timeline-grid{grid-template-columns:1fr}.hero .stats-row{gap:24px}}
 
+/* Cover Gallery */
+.gallery-section{max-width:1100px;margin:0 auto;padding:60px 24px 40px}
+.gallery-header{font-family:var(--serif);font-size:1.8rem;color:var(--accent);border-bottom:1px solid var(--border);padding-bottom:8px;margin-bottom:12px;letter-spacing:.06em}
+.gallery-sub{color:var(--muted);font-size:.9rem;margin-bottom:32px}
+.gallery-decades{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:28px}
+.gallery-decades button{background:var(--surface);color:var(--muted);border:1px solid var(--border);border-radius:20px;padding:5px 16px;font-size:.78rem;cursor:pointer;transition:all .25s;letter-spacing:.06em}
+.gallery-decades button:hover,.gallery-decades button.active{background:var(--accent);color:#0a0a0f;border-color:var(--accent)}
+.cover-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:24px}
+.cover-card{position:relative;cursor:pointer;transition:transform .3s,box-shadow .3s}
+.cover-card:hover{transform:translateY(-6px) scale(1.03);box-shadow:0 16px 48px rgba(0,0,0,.5)}
+.cover-art{width:100%;aspect-ratio:3/4;border-radius:4px;overflow:hidden;position:relative;border:1px solid var(--border)}
+.cover-art .bg{position:absolute;inset:0}
+.cover-art .masthead{position:absolute;top:10%;left:0;right:0;text-align:center;font-family:var(--serif);font-weight:700;font-size:clamp(.9rem,2.5vw,1.2rem);letter-spacing:.08em;text-transform:uppercase;z-index:2;text-shadow:0 2px 8px rgba(0,0,0,.6)}
+.cover-art .cover-year{position:absolute;bottom:8%;left:0;right:0;text-align:center;font-size:.65rem;letter-spacing:.15em;text-transform:uppercase;color:rgba(255,255,255,.7);z-index:2}
+.cover-art .cover-tagline{position:absolute;top:55%;left:10%;right:10%;text-align:center;font-family:var(--serif);font-size:.7rem;color:rgba(255,255,255,.85);z-index:2;line-height:1.4}
+.cover-art .stripe{position:absolute;z-index:1}
+.cover-label{text-align:center;margin-top:10px;font-size:.78rem;color:var(--muted)}
+.cover-label strong{color:var(--text);font-family:var(--serif);display:block;margin-bottom:2px;font-size:.85rem}
+
+/* Cover modal */
+.cover-modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:1000;align-items:center;justify-content:center;backdrop-filter:blur(6px)}
+.cover-modal-overlay.open{display:flex}
+.cover-modal{background:var(--card);border:1px solid var(--border);border-radius:10px;max-width:420px;width:90%;padding:32px;text-align:center;position:relative}
+.cover-modal .close-btn{position:absolute;top:12px;right:16px;background:none;border:none;color:var(--muted);font-size:1.4rem;cursor:pointer}
+.cover-modal .modal-cover{width:200px;aspect-ratio:3/4;margin:0 auto 20px;border-radius:4px;overflow:hidden;position:relative;border:1px solid var(--border)}
+.cover-modal h3{font-family:var(--serif);font-size:1.3rem;margin-bottom:4px}
+.cover-modal .modal-cat{font-size:.72rem;color:var(--accent);letter-spacing:.12em;text-transform:uppercase;margin-bottom:12px}
+.cover-modal .modal-desc{font-size:.88rem;color:var(--muted);line-height:1.55}
+
 /* Print feel ornament */
 .ornament{text-align:center;color:var(--border);font-size:1.4rem;letter-spacing:1em;margin:40px 0}
 footer{text-align:center;padding:48px 24px;color:var(--muted);font-size:.75rem;border-top:1px solid var(--border);letter-spacing:.08em}
@@ -73,6 +102,7 @@ footer{text-align:center;padding:48px 24px;color:var(--muted);font-size:.75rem;b
     <div class="stat"><span class="num" id="decadeSpan">0</span><span class="label">Decades Spanned</span></div>
     <div class="stat"><span class="num" id="acqCount">0</span><span class="label">Acquisitions</span></div>
   </div>
+  <a href="#gallery" style="display:inline-block;margin-top:28px;color:var(--accent);font-size:.82rem;letter-spacing:.12em;text-transform:uppercase;text-decoration:none;border:1px solid var(--accent2);padding:8px 24px;border-radius:20px;transition:all .25s" onmouseover="this.style.background='var(--accent)';this.style.color='#0a0a0f'" onmouseout="this.style.background='transparent';this.style.color='var(--accent)'">Browse Cover Gallery ↓</a>
 </div>
 
 <div style="padding-top:16px"></div>
@@ -80,6 +110,25 @@ footer{text-align:center;padding:48px 24px;color:var(--muted);font-size:.75rem;b
 <div class="filters" id="filters"></div>
 
 <div class="timeline-container" id="timeline"></div>
+
+<!-- Cover Art Gallery -->
+<div class="gallery-section" id="gallery">
+  <h2 class="gallery-header">Cover Art Gallery</h2>
+  <p class="gallery-sub">Iconic covers across the decades — stylized tributes to landmark issues</p>
+  <div class="gallery-decades" id="galleryFilters"></div>
+  <div class="cover-grid" id="coverGrid"></div>
+</div>
+
+<!-- Cover Modal -->
+<div class="cover-modal-overlay" id="coverModal">
+  <div class="cover-modal">
+    <button class="close-btn" id="closeModal">&times;</button>
+    <div class="modal-cover" id="modalCover"></div>
+    <h3 id="modalTitle"></h3>
+    <div class="modal-cat" id="modalCat"></div>
+    <p class="modal-desc" id="modalDesc"></p>
+  </div>
+</div>
 
 <div class="ornament">§ § §</div>
 <footer>MagazineRack — A visual history of American magazine publishing. Data compiled from public records.</footer>
@@ -211,6 +260,100 @@ function render(){
 }
 render();
 document.getElementById("search").addEventListener("input",render);
+
+// === Cover Art Gallery ===
+const COVERS=[
+  {title:"Cosmopolitan",decade:"1900s",year:1905,category:"Women's",tagline:"The Muckraker's Voice",desc:"When Cosmopolitan was a serious investigative journal exposing corruption in American politics.",colors:["#8b2252","#d4456a","#f5c6d0"],text:"#fff"},
+  {title:"Good Housekeeping",decade:"1910s",year:1912,category:"Lifestyle",tagline:"The Seal of Approval",desc:"The debut of the iconic Good Housekeeping Seal — a promise of quality that still resonates.",colors:["#cc3333","#fff","#eee"],text:"#222"},
+  {title:"Harper's Bazaar",decade:"1910s",year:1915,category:"Fashion",tagline:"Art Meets Fashion",desc:"Early 20th century Harper's Bazaar defined American fashion illustration.",colors:["#1a1a2e","#e94560","#0f3460"],text:"#fff"},
+  {title:"Esquire",decade:"1930s",year:1933,category:"Men's",tagline:"The Literary Gentleman",desc:"First issue featured work by Hemingway, Dos Passos, and Dashiell Hammett.",colors:["#1b3a4b","#065a82","#c9a84c"],text:"#f0e6d2"},
+  {title:"Town & Country",decade:"1920s",year:1928,category:"Luxury",tagline:"High Society Chronicles",desc:"Documenting the glamour of the Roaring Twenties in America's oldest magazine.",colors:["#2c2c3e","#c9a84c","#8b7536"],text:"#f5f0e0"},
+  {title:"Popular Mechanics",decade:"1960s",year:1965,category:"Technology",tagline:"Tomorrow's World Today",desc:"Space-age cover promising jet packs and flying cars. Some things never change.",colors:["#0a3d62","#3c6382","#e58e26"],text:"#fff"},
+  {title:"Cosmopolitan",decade:"1970s",year:1972,category:"Women's",tagline:"The Fun Fearless Female",desc:"Helen Gurley Brown era — the transformation into the modern Cosmo.",colors:["#e84393","#fd79a8","#ffeaa7"],text:"#fff"},
+  {title:"Esquire",decade:"1960s",year:1966,category:"Men's",tagline:"The New Journalism",desc:"George Lois era covers that shook the establishment. Art as provocation.",colors:["#2d3436","#e17055","#fdcb6e"],text:"#fff"},
+  {title:"Elle",decade:"1980s",year:1985,category:"Fashion",tagline:"Premier Issue",desc:"The bold American debut that challenged Vogue's fashion throne.",colors:["#000","#e74c3c","#fff"],text:"#fff"},
+  {title:"O, The Oprah Magazine",decade:"2000s",year:2000,category:"Lifestyle",tagline:"Live Your Best Life",desc:"Most successful magazine launch in history. A cultural phenomenon.",colors:["#f39c12","#e74c3c","#9b59b6"],text:"#fff"},
+  {title:"Food Network Magazine",decade:"2000s",year:2009,category:"Food",tagline:"America's Kitchen",desc:"Became the #1 food magazine by paid circulation within three years.",colors:["#e74c3c","#f39c12","#27ae60"],text:"#fff"},
+  {title:"Marie Claire",decade:"1990s",year:1994,category:"Women's",tagline:"Fashion With Purpose",desc:"Combining high fashion with investigative journalism on global women's issues.",colors:["#2c3e50","#e74c3c","#ecf0f1"],text:"#fff"},
+  {title:"Country Living",decade:"1970s",year:1978,category:"Lifestyle",tagline:"Simple Pleasures",desc:"Celebrating the beauty of rural American life — antiques, gardens, and home cooking.",colors:["#27ae60","#f5deb3","#8b4513"],text:"#fff"},
+  {title:"Car and Driver",decade:"2020s",year:2020,category:"Automotive",tagline:"The Thrill of Driving",desc:"Legendary automotive journalism joins the portfolio. For the road ahead.",colors:["#c0392b","#2c3e50","#f1c40f"],text:"#fff"},
+  {title:"Men's Health",decade:"2020s",year:2020,category:"Men's",tagline:"Build a Better Man",desc:"The definitive men's wellness brand — strength, nutrition, style.",colors:["#2980b9","#2c3e50","#e74c3c"],text:"#fff"},
+  {title:"Complex Networks",decade:"2020s",year:2021,category:"Digital Media",tagline:"Culture Forward",desc:"The bet on next-gen audiences. Streetwear, music, and digital-native storytelling.",colors:["#8e44ad","#2c3e50","#1abc9c"],text:"#fff"},
+  {title:"SmartMoney",decade:"1990s",year:1992,category:"Finance",tagline:"Wall Street Smarts",desc:"Bringing financial intelligence from Wall Street to Main Street. Ahead of its time.",colors:["#2c3e50","#27ae60","#f39c12"],text:"#fff"},
+  {title:"House Beautiful",decade:"1930s",year:1935,category:"Home",tagline:"Dream Homes",desc:"Art Deco era shelter magazine showcasing the finest in American home design.",colors:["#d4a574","#8b6914","#2c1810"],text:"#f5f0e0"},
+  {title:"HGTV Magazine",decade:"2010s",year:2012,category:"Home",tagline:"Make Your Home Happy",desc:"TV-to-print crossover bringing renovation inspiration to millions.",colors:["#27ae60","#2ecc71","#f1c40f"],text:"#fff"},
+  {title:"The Pioneer Woman",decade:"2010s",year:2017,category:"Food",tagline:"From the Ranch",desc:"Ree Drummond's heartland cooking and living — warmth on every page.",colors:["#e74c3c","#f5deb3","#8b4513"],text:"#fff"},
+];
+
+function generateCoverSVG(cover,size){
+  const w=size||180,h=Math.round(w*4/3);
+  const [c1,c2,c3]=cover.colors;
+  const tc=cover.text||"#fff";
+  // Each cover gets a unique geometric pattern
+  const patterns={
+    "Women's":`<rect x="0" y="${h*.6}" width="${w}" height="${h*.4}" fill="${c2}" opacity=".3"/><circle cx="${w*.5}" cy="${h*.45}" r="${w*.25}" fill="${c2}" opacity=".15"/>`,
+    "Fashion":`<polygon points="${w*.5},${h*.2} ${w},${h*.7} 0,${h*.7}" fill="${c2}" opacity=".2"/><line x1="0" y1="${h*.5}" x2="${w}" y2="${h*.5}" stroke="${c2}" stroke-width="2" opacity=".3"/>`,
+    "Men's":`<rect x="${w*.1}" y="${h*.3}" width="${w*.8}" height="${h*.35}" fill="${c2}" opacity=".15"/><rect x="${w*.15}" y="${h*.35}" width="${w*.7}" height="${h*.25}" fill="${c3}" opacity=".1"/>`,
+    "Lifestyle":`<circle cx="${w*.3}" cy="${h*.5}" r="${w*.2}" fill="${c2}" opacity=".2"/><circle cx="${w*.7}" cy="${h*.4}" r="${w*.15}" fill="${c3}" opacity=".15"/>`,
+    "Luxury":`<rect x="${w*.05}" y="${h*.15}" width="${w*.9}" height="${h*.7}" rx="4" fill="none" stroke="${c2}" stroke-width="2" opacity=".4"/><line x1="${w*.2}" y1="${h*.85}" x2="${w*.8}" y2="${h*.85}" stroke="${c2}" stroke-width="1" opacity=".3"/>`,
+    "Technology":`<circle cx="${w*.5}" cy="${h*.45}" r="${w*.3}" fill="none" stroke="${c3}" stroke-width="2" opacity=".3"/><circle cx="${w*.5}" cy="${h*.45}" r="${w*.15}" fill="${c3}" opacity=".1"/><line x1="${w*.5}" y1="${h*.15}" x2="${w*.5}" y2="${h*.75}" stroke="${c3}" stroke-width="1" opacity=".2"/>`,
+    "Home":`<polygon points="${w*.5},${h*.25} ${w*.85},${h*.5} ${w*.15},${h*.5}" fill="${c2}" opacity=".2"/><rect x="${w*.25}" y="${h*.5}" width="${w*.5}" height="${h*.3}" fill="${c2}" opacity=".12"/>`,
+    "Food":`<circle cx="${w*.35}" cy="${h*.45}" r="${w*.18}" fill="${c2}" opacity=".2"/><circle cx="${w*.65}" cy="${h*.5}" r="${w*.14}" fill="${c3}" opacity=".18"/><circle cx="${w*.5}" cy="${h*.35}" r="${w*.1}" fill="${c2}" opacity=".12"/>`,
+    "Finance":`<polyline points="${w*.1},${h*.65} ${w*.3},${h*.4} ${w*.5},${h*.55} ${w*.7},${h*.3} ${w*.9},${h*.35}" fill="none" stroke="${c2}" stroke-width="2.5" opacity=".35"/><line x1="${w*.1}" y1="${h*.7}" x2="${w*.9}" y2="${h*.7}" stroke="${c2}" stroke-width="1" opacity=".2"/>`,
+    "Automotive":`<ellipse cx="${w*.5}" cy="${h*.55}" rx="${w*.35}" ry="${h*.12}" fill="${c3}" opacity=".2"/><line x1="${w*.15}" y1="${h*.45}" x2="${w*.85}" y2="${h*.45}" stroke="${c2}" stroke-width="3" opacity=".25"/>`,
+    "Digital Media":`<rect x="${w*.15}" y="${h*.3}" width="${w*.3}" height="${h*.35}" rx="3" fill="${c3}" opacity=".2"/><rect x="${w*.55}" y="${h*.25}" width="${w*.3}" height="${h*.4}" rx="3" fill="${c2}" opacity=".15"/>`,
+    "Culture":`<circle cx="${w*.5}" cy="${h*.45}" r="${w*.28}" fill="none" stroke="${c2}" stroke-width="1.5" opacity=".25"/><circle cx="${w*.5}" cy="${h*.45}" r="${w*.14}" fill="${c2}" opacity=".1"/>`,
+    "Newspaper":`<line x1="${w*.1}" y1="${h*.35}" x2="${w*.9}" y2="${h*.35}" stroke="${c2}" stroke-width="1" opacity=".3"/><line x1="${w*.1}" y1="${h*.45}" x2="${w*.9}" y2="${h*.45}" stroke="${c2}" stroke-width="1" opacity=".2"/><line x1="${w*.1}" y1="${h*.55}" x2="${w*.9}" y2="${h*.55}" stroke="${c2}" stroke-width="1" opacity=".2"/>`,
+  };
+  const pat=patterns[cover.category]||patterns["Culture"];
+  const fs=Math.round(w*.085);
+  const tagFs=Math.round(w*.042);
+  const yrFs=Math.round(w*.038);
+  return `<svg xmlns="http://www.w3.org/2000/svg" width="${w}" height="${h}" viewBox="0 0 ${w} ${h}">
+    <defs><linearGradient id="bg_${cover.title.replace(/\W/g,"")}_${cover.year}" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="${c1}"/><stop offset="100%" stop-color="${c3||c1}"/></linearGradient></defs>
+    <rect width="${w}" height="${h}" fill="url(#bg_${cover.title.replace(/\W/g,"")}_${cover.year})" rx="2"/>
+    ${pat}
+    <text x="${w/2}" y="${h*.14}" text-anchor="middle" font-family="Georgia,serif" font-size="${fs}" font-weight="700" fill="${tc}" letter-spacing="2" style="text-transform:uppercase">${cover.title.length>16?cover.title.slice(0,15)+"…":cover.title}</text>
+    <text x="${w/2}" y="${h*.58}" text-anchor="middle" font-family="Georgia,serif" font-size="${tagFs}" fill="${tc}" opacity=".85" style="font-style:italic">${cover.tagline}</text>
+    <text x="${w/2}" y="${h*.93}" text-anchor="middle" font-family="Helvetica,sans-serif" font-size="${yrFs}" fill="${tc}" opacity=".6" letter-spacing="3">${cover.year}</text>
+  </svg>`;
+}
+
+const galleryDecades=[...new Set(COVERS.map(c=>c.decade))].sort();
+const gfEl=document.getElementById("galleryFilters");
+const allGBtn=document.createElement("button");allGBtn.textContent="All";allGBtn.className="active";allGBtn.dataset.decade="all";gfEl.appendChild(allGBtn);
+galleryDecades.forEach(d=>{const b=document.createElement("button");b.textContent=d;b.dataset.decade=d;gfEl.appendChild(b)});
+gfEl.querySelectorAll("button").forEach(b=>b.addEventListener("click",()=>{
+  gfEl.querySelectorAll("button").forEach(x=>x.classList.remove("active"));
+  b.classList.add("active");renderGallery();
+}));
+
+function renderGallery(){
+  const f=gfEl.querySelector(".active").dataset.decade;
+  const grid=document.getElementById("coverGrid");
+  grid.innerHTML="";
+  COVERS.filter(c=>f==="all"||c.decade===f).forEach((c,i)=>{
+    const card=document.createElement("div");card.className="cover-card";
+    card.innerHTML=`<div class="cover-art">${generateCoverSVG(c)}</div><div class="cover-label"><strong>${c.title}</strong>${c.decade} · ${c.category}</div>`;
+    card.addEventListener("click",()=>openCoverModal(c));
+    grid.appendChild(card);
+  });
+}
+renderGallery();
+
+// Modal
+const modal=document.getElementById("coverModal");
+document.getElementById("closeModal").addEventListener("click",()=>modal.classList.remove("open"));
+modal.addEventListener("click",e=>{if(e.target===modal)modal.classList.remove("open")});
+document.addEventListener("keydown",e=>{if(e.key==="Escape")modal.classList.remove("open")});
+
+function openCoverModal(c){
+  document.getElementById("modalCover").innerHTML=generateCoverSVG(c,200);
+  document.getElementById("modalTitle").textContent=c.title;
+  document.getElementById("modalCat").textContent=`${c.decade} · ${c.category}`;
+  document.getElementById("modalDesc").textContent=c.desc;
+  modal.classList.add("open");
+}
 </script>
 </body>
 </html>
