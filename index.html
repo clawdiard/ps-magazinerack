@@ -100,6 +100,41 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);line-height:
 .insight-card .insight-num{font-family:var(--serif);font-size:1.6rem;color:var(--accent);display:block;margin-bottom:4px}
 .insight-card .insight-label{font-size:.75rem;color:var(--muted);letter-spacing:.1em;text-transform:uppercase}
 
+/* Horizontal Timeline */
+.htl-section{max-width:100%;margin:0;padding:60px 0 40px;overflow:hidden}
+.htl-header-wrap{max-width:1100px;margin:0 auto;padding:0 24px}
+.htl-title{font-family:var(--serif);font-size:1.8rem;color:var(--accent);border-bottom:1px solid var(--border);padding-bottom:8px;margin-bottom:8px;letter-spacing:.06em}
+.htl-sub{color:var(--muted);font-size:.9rem;margin-bottom:28px}
+.htl-scroll-hint{color:var(--accent);font-size:.75rem;letter-spacing:.12em;text-transform:uppercase;margin-bottom:16px;animation:pulse-hint 2s ease infinite}
+@keyframes pulse-hint{0%,100%{opacity:1}50%{opacity:.4}}
+.htl-track-outer{position:relative;width:100%;overflow-x:auto;overflow-y:hidden;-webkit-overflow-scrolling:touch;scrollbar-width:thin;scrollbar-color:var(--accent2) var(--surface)}
+.htl-track-outer::-webkit-scrollbar{height:6px}
+.htl-track-outer::-webkit-scrollbar-track{background:var(--surface)}
+.htl-track-outer::-webkit-scrollbar-thumb{background:var(--accent2);border-radius:3px}
+.htl-track{display:flex;align-items:flex-start;padding:24px 60px 40px;min-height:420px;position:relative}
+.htl-line{position:absolute;top:200px;left:40px;right:40px;height:2px;background:linear-gradient(90deg,transparent,var(--accent2) 2%,var(--accent2) 98%,transparent);z-index:0}
+.htl-decade-marker{position:relative;flex:0 0 auto;display:flex;flex-direction:column;align-items:center;margin-right:0;z-index:1}
+.htl-decade-label{font-family:var(--serif);font-size:1.4rem;color:var(--accent);letter-spacing:.08em;position:relative;top:172px;white-space:nowrap;background:var(--bg);padding:0 12px}
+.htl-decade-dot{width:14px;height:14px;border-radius:50%;background:var(--accent);border:3px solid var(--bg);position:relative;top:193px;box-shadow:0 0 12px rgba(201,168,76,.3)}
+.htl-card-col{display:flex;flex-direction:column;gap:12px;margin-right:8px;flex:0 0 auto}
+.htl-item{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:14px 18px;width:220px;transition:all .4s cubic-bezier(.25,.46,.45,.94);opacity:0;transform:translateY(30px);cursor:default;position:relative}
+.htl-item.visible{opacity:1;transform:translateY(0)}
+.htl-item:hover{border-color:var(--accent2);box-shadow:0 8px 28px rgba(0,0,0,.4);transform:translateY(-4px)!important}
+.htl-item.above{margin-bottom:16px}
+.htl-item.below{margin-top:16px}
+.htl-item .htl-yr{font-family:var(--serif);font-size:.7rem;color:var(--accent);background:var(--surface);display:inline-block;padding:2px 8px;border-radius:3px;margin-bottom:6px}
+.htl-item h4{font-family:var(--serif);font-size:.95rem;color:var(--text);margin-bottom:4px;line-height:1.3}
+.htl-item .htl-cat{font-size:.65rem;color:var(--accent);letter-spacing:.1em;text-transform:uppercase;margin-bottom:6px}
+.htl-item .htl-desc{font-size:.78rem;color:var(--muted);line-height:1.45}
+.htl-item .htl-type-pip{position:absolute;top:14px;right:14px;width:8px;height:8px;border-radius:50%}
+.htl-item .htl-type-pip.launched{background:#5a9acb}
+.htl-item .htl-type-pip.acquired{background:#c9a84c}
+.htl-item .htl-type-pip.closed{background:#cb5a5a}
+.htl-connector{width:1px;height:20px;background:var(--border);margin:0 auto;flex:0 0 auto}
+.htl-progress-bar{position:sticky;left:0;right:0;height:3px;background:var(--surface);z-index:10;margin-top:8px;max-width:1100px;margin-left:auto;margin-right:auto;border-radius:2px;overflow:hidden}
+.htl-progress-fill{height:100%;background:linear-gradient(90deg,var(--accent),var(--accent2));width:0%;transition:width .1s;border-radius:2px}
+.htl-era-label{position:absolute;top:220px;font-size:.6rem;color:var(--muted);letter-spacing:.15em;text-transform:uppercase;white-space:nowrap;opacity:.5}
+
 /* Print feel ornament */
 .ornament{text-align:center;color:var(--border);font-size:1.4rem;letter-spacing:1em;margin:40px 0}
 footer{text-align:center;padding:48px 24px;color:var(--muted);font-size:.75rem;border-top:1px solid var(--border);letter-spacing:.08em}
@@ -117,6 +152,7 @@ footer{text-align:center;padding:48px 24px;color:var(--muted);font-size:.75rem;b
   </div>
   <a href="#gallery" style="display:inline-block;margin-top:28px;color:var(--accent);font-size:.82rem;letter-spacing:.12em;text-transform:uppercase;text-decoration:none;border:1px solid var(--accent2);padding:8px 24px;border-radius:20px;transition:all .25s" onmouseover="this.style.background='var(--accent)';this.style.color='#0a0a0f'" onmouseout="this.style.background='transparent';this.style.color='var(--accent)'">Browse Cover Gallery ↓</a>
   <a href="#charts" style="display:inline-block;margin-top:12px;margin-left:12px;color:var(--accent);font-size:.82rem;letter-spacing:.12em;text-transform:uppercase;text-decoration:none;border:1px solid var(--accent2);padding:8px 24px;border-radius:20px;transition:all .25s" onmouseover="this.style.background='var(--accent)';this.style.color='#0a0a0f'" onmouseout="this.style.background='transparent';this.style.color='var(--accent)'">Revenue & Circulation ↓</a>
+  <a href="#horizontal-timeline" style="display:inline-block;margin-top:12px;margin-left:12px;color:var(--accent);font-size:.82rem;letter-spacing:.12em;text-transform:uppercase;text-decoration:none;border:1px solid var(--accent2);padding:8px 24px;border-radius:20px;transition:all .25s" onmouseover="this.style.background='var(--accent)';this.style.color='#0a0a0f'" onmouseout="this.style.background='transparent';this.style.color='var(--accent)'">Empire Timeline →</a>
 </div>
 
 <div style="padding-top:16px"></div>
@@ -157,6 +193,21 @@ footer{text-align:center;padding:48px 24px;color:var(--muted);font-size:.75rem;b
     <canvas id="chartCanvas" width="1060" height="420"></canvas>
   </div>
   <div class="chart-insights" id="chartInsights"></div>
+</div>
+
+<!-- Horizontal Empire Timeline -->
+<div class="htl-section" id="horizontal-timeline">
+  <div class="htl-header-wrap">
+    <h2 class="htl-title">The Empire Timeline</h2>
+    <p class="htl-sub">Scroll horizontally to explore 137 years of publishing history — decade by decade</p>
+    <div class="htl-scroll-hint">← Scroll to explore →</div>
+    <div class="htl-progress-bar"><div class="htl-progress-fill" id="htlProgress"></div></div>
+  </div>
+  <div class="htl-track-outer" id="htlTrackOuter">
+    <div class="htl-track" id="htlTrack">
+      <div class="htl-line"></div>
+    </div>
+  </div>
 </div>
 
 <div class="ornament">§ § §</div>
@@ -483,6 +534,114 @@ document.getElementById("chartTabs").querySelectorAll("button").forEach(b=>{
   });
 });
 renderChart("circulation");
+
+// === Horizontal Empire Timeline ===
+(function(){
+  const track=document.getElementById("htlTrack");
+  const outer=document.getElementById("htlTrackOuter");
+  const progressFill=document.getElementById("htlProgress");
+  
+  // Group DATA by decade
+  const sorted=[...DATA].sort((a,b)=>a.year-b.year);
+  const decadeGroups={};
+  sorted.forEach(d=>{
+    const dec=Math.floor(d.year/10)*10;
+    if(!decadeGroups[dec])decadeGroups[dec]=[];
+    decadeGroups[dec].push(d);
+  });
+  
+  const decadeKeys=Object.keys(decadeGroups).map(Number).sort((a,b)=>a-b);
+  const eraLabels={1880:"The Founding Era",1920:"Golden Age of Print",1960:"Cultural Revolution",1990:"Digital Dawn",2010:"Platform Transformation"};
+  
+  decadeKeys.forEach((dec,di)=>{
+    // Decade marker
+    const marker=document.createElement("div");
+    marker.className="htl-decade-marker";
+    marker.innerHTML=`<div class="htl-decade-label">${dec}s</div><div class="htl-decade-dot"></div>`;
+    marker.style.marginRight="12px";
+    track.appendChild(marker);
+    
+    // Era label
+    if(eraLabels[dec]){
+      const era=document.createElement("div");
+      era.className="htl-era-label";
+      era.textContent=eraLabels[dec];
+      era.style.left=(di*280+60)+"px";
+      track.appendChild(era);
+    }
+    
+    // Cards for this decade — alternate above/below the line
+    const items=decadeGroups[dec];
+    items.forEach((d,i)=>{
+      const col=document.createElement("div");
+      col.className="htl-card-col";
+      
+      const card=document.createElement("div");
+      const isAbove=i%2===0;
+      card.className=`htl-item ${isAbove?"above":"below"}`;
+      card.dataset.index=di*10+i; // for staggered animation
+      card.innerHTML=`
+        <div class="htl-type-pip ${d.type}"></div>
+        <span class="htl-yr">${d.year}</span>
+        <h4>${d.title}</h4>
+        <div class="htl-cat">${d.category}</div>
+        <p class="htl-desc">${d.desc.length>100?d.desc.slice(0,97)+"…":d.desc}</p>
+      `;
+      
+      if(isAbove){
+        col.style.paddingBottom="60px";
+      } else {
+        col.style.paddingTop="220px";
+      }
+      
+      col.appendChild(card);
+      track.appendChild(col);
+    });
+  });
+  
+  // Scroll-linked animations
+  function animateCards(){
+    const items=track.querySelectorAll(".htl-item");
+    const outerRect=outer.getBoundingClientRect();
+    const scrollLeft=outer.scrollLeft;
+    const viewLeft=scrollLeft;
+    const viewRight=scrollLeft+outer.clientWidth;
+    
+    items.forEach((item,i)=>{
+      const itemLeft=item.offsetParent.offsetLeft;
+      if(itemLeft<viewRight-40 && itemLeft>viewLeft-300){
+        // Stagger the animation
+        const delay=parseInt(item.dataset.index||0)%5*60;
+        setTimeout(()=>item.classList.add("visible"),delay);
+      }
+    });
+    
+    // Progress bar
+    const maxScroll=outer.scrollWidth-outer.clientWidth;
+    const pct=maxScroll>0?(scrollLeft/maxScroll)*100:0;
+    progressFill.style.width=pct+"%";
+  }
+  
+  outer.addEventListener("scroll",animateCards);
+  // Initial trigger
+  setTimeout(animateCards,300);
+  
+  // Intersection observer to trigger first animation when section enters viewport
+  const observer=new IntersectionObserver((entries)=>{
+    entries.forEach(e=>{
+      if(e.isIntersecting)animateCards();
+    });
+  },{threshold:0.1});
+  observer.observe(document.getElementById("horizontal-timeline"));
+  
+  // Mouse wheel horizontal scrolling helper
+  outer.addEventListener("wheel",(e)=>{
+    if(Math.abs(e.deltaY)>Math.abs(e.deltaX)){
+      e.preventDefault();
+      outer.scrollLeft+=e.deltaY*2;
+    }
+  },{passive:false});
+})();
 </script>
 </body>
 </html>
