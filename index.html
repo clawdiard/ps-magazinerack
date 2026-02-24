@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MagazineRack — 137 Years of Publishing History</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0a0a0f;--surface:#12121a;--card:#1a1a26;--border:#2a2a3a;
+  --text:#e8e6e3;--muted:#8a8a9a;--accent:#c9a84c;--accent2:#7a6b3a;
+  --serif:'Georgia','Times New Roman',serif;
+  --sans:'Helvetica Neue','Arial',sans-serif;
+}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:var(--sans);line-height:1.6;overflow-x:hidden}
+
+/* Header */
+.hero{text-align:center;padding:80px 24px 60px;border-bottom:1px solid var(--border);background:linear-gradient(180deg,#0f0f18 0%,var(--bg) 100%)}
+.hero h1{font-family:var(--serif);font-size:clamp(2.4rem,5vw,4rem);font-weight:400;letter-spacing:.04em;color:var(--accent);margin-bottom:12px}
+.hero .sub{font-size:1.05rem;color:var(--muted);letter-spacing:.15em;text-transform:uppercase;font-weight:300}
+.hero .stats-row{display:flex;justify-content:center;gap:48px;margin-top:36px;flex-wrap:wrap}
+.hero .stat{text-align:center}
+.hero .stat .num{font-family:var(--serif);font-size:2.4rem;color:var(--accent);display:block}
+.hero .stat .label{font-size:.75rem;color:var(--muted);letter-spacing:.12em;text-transform:uppercase}
+
+/* Filter Bar */
+.filters{position:sticky;top:0;z-index:100;background:rgba(10,10,15,.92);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);padding:14px 24px;display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+.filters button{background:var(--surface);color:var(--muted);border:1px solid var(--border);border-radius:20px;padding:6px 18px;font-size:.8rem;cursor:pointer;transition:all .25s;letter-spacing:.06em}
+.filters button:hover,.filters button.active{background:var(--accent);color:#0a0a0f;border-color:var(--accent)}
+
+/* Timeline */
+.timeline-container{max-width:1100px;margin:0 auto;padding:60px 24px}
+.decade-section{margin-bottom:64px}
+.decade-header{font-family:var(--serif);font-size:1.8rem;color:var(--accent);border-bottom:1px solid var(--border);padding-bottom:8px;margin-bottom:28px;letter-spacing:.06em}
+.timeline-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:20px}
+
+/* Cards */
+.mag-card{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:24px;transition:all .3s;cursor:default;position:relative;overflow:hidden}
+.mag-card:hover{border-color:var(--accent2);transform:translateY(-2px);box-shadow:0 8px 32px rgba(0,0,0,.4)}
+.mag-card .year-badge{position:absolute;top:16px;right:16px;background:var(--accent);color:#0a0a0f;font-family:var(--serif);font-size:.75rem;padding:3px 10px;border-radius:3px;font-weight:700}
+.mag-card h3{font-family:var(--serif);font-size:1.2rem;color:var(--text);margin-bottom:6px;padding-right:60px}
+.mag-card .category{font-size:.7rem;color:var(--accent);letter-spacing:.12em;text-transform:uppercase;margin-bottom:10px;display:inline-block}
+.mag-card .desc{font-size:.88rem;color:var(--muted);line-height:1.55;margin-bottom:12px}
+.mag-card .meta{display:flex;gap:12px;flex-wrap:wrap}
+.mag-card .tag{font-size:.68rem;color:var(--muted);background:var(--surface);border:1px solid var(--border);border-radius:3px;padding:2px 8px;letter-spacing:.04em}
+.mag-card .tag.launched{border-color:#2a6e3f;color:#5cb87a}
+.mag-card .tag.acquired{border-color:#5a5a2a;color:#c9a84c}
+.mag-card .tag.closed{border-color:#6e2a2a;color:#cb5a5a}
+.mag-card .tag.active{border-color:#2a4a6e;color:#5a9acb}
+
+/* Search */
+.search-wrap{max-width:480px;margin:0 auto 8px;padding:0 24px}
+.search-wrap input{width:100%;background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:10px 16px;color:var(--text);font-size:.95rem;outline:none;transition:border .2s}
+.search-wrap input:focus{border-color:var(--accent)}
+.search-wrap input::placeholder{color:var(--muted)}
+
+/* Responsive */
+@media(max-width:600px){.timeline-grid{grid-template-columns:1fr}.hero .stats-row{gap:24px}}
+
+/* Print feel ornament */
+.ornament{text-align:center;color:var(--border);font-size:1.4rem;letter-spacing:1em;margin:40px 0}
+footer{text-align:center;padding:48px 24px;color:var(--muted);font-size:.75rem;border-top:1px solid var(--border);letter-spacing:.08em}
+</style>
+</head>
+<body>
+<div class="hero">
+  <h1>MagazineRack</h1>
+  <p class="sub">137 Years of American Publishing</p>
+  <div class="stats-row">
+    <div class="stat"><span class="num" id="totalCount">0</span><span class="label">Titles</span></div>
+    <div class="stat"><span class="num" id="activeCount">0</span><span class="label">Active Today</span></div>
+    <div class="stat"><span class="num" id="decadeSpan">0</span><span class="label">Decades Spanned</span></div>
+    <div class="stat"><span class="num" id="acqCount">0</span><span class="label">Acquisitions</span></div>
+  </div>
+</div>
+
+<div style="padding-top:16px"></div>
+<div class="search-wrap"><input type="text" id="search" placeholder="Search titles, categories, decades…"></div>
+<div class="filters" id="filters"></div>
+
+<div class="timeline-container" id="timeline"></div>
+
+<div class="ornament">§ § §</div>
+<footer>MagazineRack — A visual history of American magazine publishing. Data compiled from public records.</footer>
+
+<script>
+const DATA=[
+  // 1880s-1900s
+  {title:"San Francisco Examiner",year:1887,category:"Newspaper",type:"launched",desc:"William Randolph Hearst takes over his father's paper, launching an empire.",tags:["founding","newspaper"]},
+  {title:"New York Journal",year:1895,category:"Newspaper",type:"acquired",desc:"Acquired to compete with Pulitzer's World, igniting the yellow journalism era.",tags:["acquisition","newspaper"]},
+  {title:"Cosmopolitan",year:1905,category:"Women's",type:"acquired",desc:"Originally a family magazine founded 1886. Acquired and transformed into a major muckraking journal before its modern incarnation.",tags:["acquisition","women"]},
+  {title:"Good Housekeeping",year:1911,category:"Lifestyle",type:"acquired",desc:"Founded 1885. Acquisition brought the iconic Good Housekeeping Seal of Approval into the fold.",tags:["acquisition","lifestyle","seal"]},
+  {title:"Harper's Bazaar",year:1913,category:"Fashion",type:"acquired",desc:"America's first fashion magazine (est. 1867). One of the crown jewels of the publishing portfolio.",tags:["acquisition","fashion"]},
+  // 1920s-1940s
+  {title:"Redbook",year:1903,category:"Women's",type:"launched",desc:"Originally 'The Red Book Magazine' — fiction-forward, later pivoted to women's lifestyle.",tags:["women","fiction"]},
+  {title:"Town & Country",year:1925,category:"Luxury",type:"acquired",desc:"America's oldest continuously published magazine (est. 1846). The ultimate society journal.",tags:["acquisition","luxury","society"]},
+  {title:"Esquire",year:1933,category:"Men's",type:"launched",desc:"Launched as a men's fashion quarterly during the Depression. Became a literary powerhouse with Hemingway, Fitzgerald, and Mailer.",tags:["men","literary","fashion"],note:"Acquired by Hearst 1986"},
+  {title:"House Beautiful",year:1934,category:"Home",type:"acquired",desc:"Home design and architecture magazine (est. 1896). Acquired to complement shelter portfolio.",tags:["acquisition","home","design"]},
+  {title:"Popular Mechanics",year:1958,category:"Technology",type:"acquired",desc:"Founded 1902. The definitive American technology and DIY magazine, covering everything from space to home repair.",tags:["acquisition","technology","science"]},
+  // 1960s-1970s
+  {title:"Eye",year:1968,category:"Culture",type:"launched",desc:"Short-lived but influential culture magazine reflecting the counterculture movement. Folded 1969.",tags:["culture","counterculture"],status:"closed"},
+  {title:"Country Living",year:1978,category:"Lifestyle",type:"launched",desc:"Celebrating rural American lifestyle, antiques, cooking, and country homes.",tags:["lifestyle","home"]},
+  // 1980s
+  {title:"Esquire (Acquired)",year:1986,category:"Men's",type:"acquired",desc:"Full acquisition of Esquire, cementing the men's magazine portfolio alongside the women's titles.",tags:["acquisition","men"]},
+  {title:"Colonial Homes",year:1986,category:"Home",type:"launched",desc:"Niche shelter title focused on Colonial-era architecture and restoration. Later folded into Country Living.",tags:["home","architecture"],status:"closed"},
+  {title:"Elle",year:1985,category:"Fashion",type:"launched",desc:"US edition launched as a joint venture with Hachette Filipacchi. High-fashion challenger to Vogue.",tags:["fashion","joint venture"]},
+  // 1990s
+  {title:"SmartMoney",year:1992,category:"Finance",type:"launched",desc:"Personal finance magazine co-created with Dow Jones. Brought Wall Street intelligence to Main Street investors.",tags:["finance","wall street","dow jones"],note:"Folded 2012",status:"closed"},
+  {title:"Marie Claire",year:1994,category:"Women's",type:"launched",desc:"US edition of the French global title. Combined fashion with serious international reporting on women's issues.",tags:["women","fashion","international"]},
+  {title:"George",year:1995,category:"Politics",type:"launched",desc:"JFK Jr.'s political lifestyle magazine. A cultural moment that merged politics and pop culture. Published until 2001.",tags:["politics","culture"],status:"closed",note:"JFK Jr. venture"},
+  {title:"Talk",year:1999,category:"Culture",type:"launched",desc:"Tina Brown's ambitious magazine venture, co-produced with Miramax. Closed 2002 after advertising downturn.",tags:["culture","celebrity"],status:"closed"},
+  {title:"O, The Oprah Magazine",year:2000,category:"Lifestyle",type:"launched",desc:"Joint venture with Oprah Winfrey. Became one of the most successful magazine launches in history.",tags:["lifestyle","celebrity","oprah"]},
+  // 2000s
+  {title:"Lifetime",year:2001,category:"Women's",type:"launched",desc:"Tied to Lifetime Television brand. Short-lived print venture in the age of digital disruption.",tags:["women","television"],status:"closed"},
+  {title:"Quick & Simple",year:2003,category:"Food",type:"launched",desc:"Budget-friendly cooking and lifestyle magazine targeting busy families.",tags:["food","budget"],status:"closed"},
+  {title:"Food Network Magazine",year:2009,category:"Food",type:"launched",desc:"Partnership with Food Network. Rapidly became the #1 food magazine in America by paid circulation.",tags:["food","television","partnership"]},
+  {title:"HGTV Magazine",year:2012,category:"Home",type:"launched",desc:"Collaboration with HGTV. Home design and renovation inspiration reaching millions of subscribers.",tags:["home","television","partnership"]},
+  // 2010s
+  {title:"Dr. Oz The Good Life",year:2014,category:"Health",type:"launched",desc:"Health and wellness title with Dr. Oz. Reflected the era of personality-driven media brands. Ceased 2018.",tags:["health","celebrity"],status:"closed"},
+  {title:"Airbnb Magazine",year:2017,category:"Travel",type:"launched",desc:"Travel and hospitality partnership with Airbnb. Innovative branded content play. Ceased 2019.",tags:["travel","partnership"],status:"closed"},
+  {title:"The Pioneer Woman",year:2017,category:"Food",type:"launched",desc:"Ree Drummond's cooking and lifestyle magazine. Leveraging massive Food Network following.",tags:["food","celebrity","television"]},
+  {title:"Delish",year:2017,category:"Food/Digital",type:"launched",desc:"Digital-first food brand expanded to print quarterly bookazines. Model for the digital-to-print pipeline.",tags:["food","digital","bookazine"]},
+  // Major acquisitions / milestones
+  {title:"Fitch Ratings",year:2006,category:"Financial Services",type:"acquired",desc:"Major diversification into financial data, acquiring the storied credit rating agency. Transformed the corporate portfolio.",tags:["acquisition","finance","data","ratings"]},
+  {title:"iCrossing",year:2010,category:"Digital",type:"acquired",desc:"Digital marketing agency acquisition, part of the pivot toward digital revenue streams.",tags:["acquisition","digital","marketing"]},
+  {title:"Complex Networks",year:2021,category:"Digital Media",type:"acquired",desc:"Youth-oriented digital media company. Major bet on next-generation audiences and ComplexCon events.",tags:["acquisition","digital","youth","events"]},
+  {title:"Verily",year:2019,category:"Women's/Digital",type:"launched",desc:"Acquired digital lifestyle publication focused on relationships, wellness, and culture. Women's digital play.",tags:["women","digital","wellness"]},
+  {title:"Runner's World",year:2020,category:"Fitness",type:"acquired",desc:"Part of Hearst Magazines' continued expansion in the active lifestyle space.",tags:["acquisition","fitness","health"]},
+  {title:"Bicycling",year:2020,category:"Fitness",type:"acquired",desc:"Cycling enthusiast title complementing the active lifestyle portfolio.",tags:["acquisition","fitness","cycling"]},
+  {title:"Men's Health",year:2020,category:"Men's",type:"acquired",desc:"Flagship men's wellness brand acquired from Rodale. Major addition to the men's portfolio.",tags:["acquisition","men","health"]},
+  {title:"Women's Health",year:2020,category:"Women's",type:"acquired",desc:"Leading women's fitness and wellness brand, acquired alongside Men's Health.",tags:["acquisition","women","health"]},
+  {title:"Car and Driver",year:2020,category:"Automotive",type:"acquired",desc:"Legendary automotive enthusiast magazine. Dream title for any car aficionado.",tags:["acquisition","automotive","enthusiast"]},
+  {title:"Road & Track",year:2020,category:"Automotive",type:"acquired",desc:"Premium automotive journalism and culture magazine. The connoisseur's car publication.",tags:["acquisition","automotive"]}
+];
+
+const categories=[...new Set(DATA.map(d=>d.category))].sort();
+const types=["launched","acquired","closed"];
+
+// Stats
+document.getElementById("totalCount").textContent=DATA.length;
+document.getElementById("activeCount").textContent=DATA.filter(d=>d.status!=="closed").length;
+document.getElementById("acqCount").textContent=DATA.filter(d=>d.type==="acquired").length;
+const decades=[...new Set(DATA.map(d=>Math.floor(d.year/10)*10))];
+document.getElementById("decadeSpan").textContent=decades.length;
+
+// Filters
+const filtersEl=document.getElementById("filters");
+function buildFilters(){
+  filtersEl.innerHTML="";
+  const allBtn=document.createElement("button");
+  allBtn.textContent="All";allBtn.className="active";allBtn.dataset.filter="all";
+  filtersEl.appendChild(allBtn);
+  types.forEach(t=>{const b=document.createElement("button");b.textContent=t.charAt(0).toUpperCase()+t.slice(1);b.dataset.filter=t;filtersEl.appendChild(b)});
+  categories.forEach(c=>{const b=document.createElement("button");b.textContent=c;b.dataset.filter="cat:"+c;filtersEl.appendChild(b)});
+  filtersEl.querySelectorAll("button").forEach(b=>b.addEventListener("click",()=>{
+    filtersEl.querySelectorAll("button").forEach(x=>x.classList.remove("active"));
+    b.classList.add("active");render();
+  }));
+}
+buildFilters();
+
+function getActiveFilter(){
+  const a=filtersEl.querySelector(".active");
+  return a?a.dataset.filter:"all";
+}
+
+function render(){
+  const f=getActiveFilter();
+  const q=document.getElementById("search").value.toLowerCase();
+  let items=DATA.filter(d=>{
+    if(f!=="all"){
+      if(f.startsWith("cat:")){if(d.category!==f.slice(4))return false}
+      else if(f==="closed"){if(d.status!=="closed")return false}
+      else{if(d.type!==f)return false}
+    }
+    if(q){
+      const s=`${d.title} ${d.category} ${d.year} ${d.desc} ${(d.tags||[]).join(" ")}`.toLowerCase();
+      if(!s.includes(q))return false;
+    }
+    return true;
+  });
+  items.sort((a,b)=>a.year-b.year);
+
+  const grouped={};
+  items.forEach(d=>{
+    const dec=Math.floor(d.year/10)*10+"s";
+    if(!grouped[dec])grouped[dec]=[];
+    grouped[dec].push(d);
+  });
+
+  const el=document.getElementById("timeline");
+  el.innerHTML="";
+  Object.keys(grouped).sort().forEach(dec=>{
+    const sec=document.createElement("div");sec.className="decade-section";
+    sec.innerHTML=`<h2 class="decade-header">${dec}</h2><div class="timeline-grid">${
+      grouped[dec].map(d=>`<div class="mag-card">
+        <span class="year-badge">${d.year}</span>
+        <h3>${d.title}</h3>
+        <span class="category">${d.category}</span>
+        <p class="desc">${d.desc}</p>
+        <div class="meta">
+          <span class="tag ${d.type}">${d.type}</span>
+          ${d.status==="closed"?'<span class="tag closed">Ceased</span>':'<span class="tag active">Active</span>'}
+          ${(d.tags||[]).slice(0,2).map(t=>`<span class="tag">${t}</span>`).join("")}
+        </div>
+      </div>`).join("")
+    }</div>`;
+    el.appendChild(sec);
+  });
+}
+render();
+document.getElementById("search").addEventListener("input",render);
+</script>
+</body>
+</html>
